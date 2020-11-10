@@ -1,0 +1,8 @@
+
+test_module.decrypt_controller_decrypt:
+  path: '/test_module/decrypt/{nid}'
+  defaults:
+    _controller: '\Drupal\test_module\Controller\DecryptController::decrypt'
+    _title: 'decrypt'
+  requirements:
+    _permission: 'access content'

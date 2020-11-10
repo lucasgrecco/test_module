@@ -1,0 +1,7 @@
+name: 'Test module'
+type: module
+description: 'Encrypted URL for Drupal8/9'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - simple_mail

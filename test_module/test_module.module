@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Contains test_module.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function test_module_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the test_module module.
+    case 'help.page.test_module':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Encrypted URL for Drupal8/9') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+
+/**
+ * Implements hook_entity_insert().
+ */
+function test_module_entity_insert(Drupal\Core\Entity\EntityInterface $entity) {
+
+  $base_url = \Drupal::request()->getSchemeAndHttpHost();
+
+  if ($entity->getEntityTypeId() == 'node' && $entity->bundle() === 'article') {
+    $uid = $entity->uid->getValue();
+    $nid = $entity->id();
+    $user = Drupal\user\Entity\User::load($uid[0]['target_id']);
+
+    $to_mail = $user->getEmail();
+    $params['message'] = $base_url . '/test_module/decrypt/' . base64_encode($nid);
+    $body = $base_url . '/test_module/decrypt/' . base64_encode($nid);
+    $params['title'] = $entity->label();
+    simple_mail_send($to_mail, $to_mail, 'New Article available', $body);
+    \Drupal::logger('test_module')->debug('New Article available: ' . $body);
+  }
+
+}
